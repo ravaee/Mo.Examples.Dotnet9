@@ -1,32 +1,19 @@
-﻿// new Overload Resolution Priority
-// Link: https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-13#params-collections:~:text=partial%20members.-,Overload%20resolution%20priority,-In%20C%23%2013
-
+﻿
+//Link: https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/proposals/csharp-13.0/overload-resolution-priority#:~:text=Detailed%20Design-,Overload%20resolution%20priority,-We%20define%20a
 
 using System.Runtime.CompilerServices;
 
-///Imagine you are maintaining a library and want to introduce a new overload for a method without breaking existing behavior. 
-///You can use OverloadResolutionPriority to ensure backward compatibility.
-
-PrintAssist.PrintMessage("Hello, World!");        // Calls the new optimized string overload
-PrintAssist.PrintMessage("Hello, World!", 2);
+var d = new C1();
+int[] arr = [1, 2, 3];
+d.M(arr); // Prints "Span"
 
 
-
-class PrintAssist
+class C1
 {
-    // Original method (for backward compatibility)
-    public static void PrintMessage(string message, int repeat)
-    {
-        for (int i = 0; i < repeat; i++)
-        {
-            Console.WriteLine($"Legacy: {message}");
-        }
-    }
+    
+    public void M(ReadOnlySpan<int> s) => Console.WriteLine("Span");
+    // Default overload resolution priority
 
-    // New method (optimized for single calls)
-    [OverloadResolutionPriority(1)] // Higher priority
-    public static void PrintMessage(string message)
-    {
-        Console.WriteLine($"Optimized: {message}");
-    }
+    [OverloadResolutionPriority(1)]
+    public void M(int[] a) => Console.WriteLine("Array");
 }
